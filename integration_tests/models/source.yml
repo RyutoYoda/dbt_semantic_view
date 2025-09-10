@@ -1,0 +1,7 @@
+version: 2
+sources:
+  - name: seed_sources
+    schema: "{{ target.schema }}"
+    tables:
+      - name: base_table2
+      - name: raw_semantic_view

@@ -1,0 +1,31 @@
+name: "snowflake_semantic_view_integration_tests"
+version: "1.0"
+config-version: 2
+
+profile: "integration_tests"
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+flags:
+  send_anonymous_usage_stats: False
+  use_colors: True
+
+seeds:
+  +schema: raw_data
+  +quote_columns: false
+
+models:
+  +bind: false
+
+on-run-start:
+  - "{{ create_base_table2() }}"
+  - "{{ create_raw_semantic_view() }}"
