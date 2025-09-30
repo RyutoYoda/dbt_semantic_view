@@ -30,6 +30,10 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+dispatch:
+  - macro_namespace: dbt
+    search_order: [dbt_semantic_view, dbt]
+
 flags:
   send_anonymous_usage_stats: False
   use_colors: True
@@ -40,6 +44,8 @@ seeds:
 
 models:
   +bind: false
+  +persist_docs:
+    relation: true
 
 on-run-start:
   - "{{ create_base_table2() }}"

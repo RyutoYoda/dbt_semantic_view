@@ -16,8 +16,10 @@
 version: 2
 
 models:
-  - name: semantic_view_basic
+  - name: semantic_view_with_description
     description: "Semantic view description for persist_docs"
+  - name: semantic_view_with_comment_override_description
+    description: "Semantic view description overriding the model comment"
   - name: semantic_view_with_config_copy_grants
     config:
       copy_grants: true
