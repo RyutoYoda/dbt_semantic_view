@@ -13,18 +13,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
-{% materialization semantic_view, adapter='snowflake' -%}
-
-    {% set original_query_tag = set_query_tag() %}
-    {% do dbt_semantic_view.snowflake__create_or_replace_semantic_view() %}
-
-    {% set target_relation = this.incorporate(type='view') %}
-
-    -- TODO: enable this when semantic_view is part of the SnowflakeRelationType
-    -- {% do persist_docs(target_relation, model, for_columns=false) %}
-
-    {% do unset_query_tag(original_query_tag) %}
-
-    {% do return({'relations': [target_relation]}) %}
-
-{%- endmaterialization %}
+{{ config(materialized='semantic_view') }}
+TABLES(t1 AS {{ ref('base_table') }})
+DIMENSIONS(t1."COPY GRANTS" as value)
+METRICS(t1.total_rows AS SUM(t1."COPY GRANTS"))
