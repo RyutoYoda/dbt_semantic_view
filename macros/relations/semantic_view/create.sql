@@ -58,14 +58,11 @@
 {% macro snowflake__create_or_replace_semantic_view() %}
   {%- set identifier = model['alias'] -%}
 
-  {%- set old_relation = adapter.get_relation(database=database, schema=schema, identifier=identifier) -%}
-  {%- set exists_as_view = (old_relation is not none and old_relation.is_view) -%}
   {%- set copy_grants = config.get('copy_grants', default=false) -%}
 
   {%- set target_relation = api.Relation.create(
       identifier=identifier, schema=schema, database=database,
       type='view') -%}
-  {% set grant_config = config.get('grants') %}
 
   {%- if copy_grants -%}
     {%- set sql = dbt_semantic_view.append_copy_grants_if_missing(sql) -%}

@@ -21,7 +21,6 @@
     {% set target_relation = this.incorporate(type='view') %}
 
     -- TODO: enable this when semantic_view is part of the SnowflakeRelationType
-    -- {% do persist_docs(target_relation, model, for_columns=false) %}
 
     {% do unset_query_tag(original_query_tag) %}
 

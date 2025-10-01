@@ -16,6 +16,8 @@
 version: 2
 
 models:
+  - name: semantic_view_basic
+    description: "Semantic view description for persist_docs"
   - name: semantic_view_with_config_copy_grants
     config:
       copy_grants: true
