@@ -32,27 +32,40 @@
 {%- endmacro %}
 
 
+{% macro append_copy_grants_if_missing(sql) -%}
+  {%- set s = (sql | trim) -%}
+  {%- set had_semicolon = (s[-1:] == ';') -%}
+  {%- if had_semicolon -%}
+    {%- set s = (s[:-1] | trim) -%}
+  {%- endif -%}
+
+  {# detect existing COPY GRANTS at the end, case/whitespace-insensitive #}
+  {%- set tokens = s.split() -%}
+  {%- set ends_with_copy = (tokens | length >= 2) 
+      and ((tokens[-2] | lower) == 'copy')
+      and ((tokens[-1] | lower) == 'grants') -%}
+
+  {%- if ends_with_copy -%}
+    {%- set out = s -%}
+  {%- else -%}
+    {%- set out = s ~ '\nCOPY GRANTS' -%}
+  {%- endif -%}
+
+  {{- out -}}
+{%- endmacro %}
+
+
 {% macro snowflake__create_or_replace_semantic_view() %}
   {%- set identifier = model['alias'] -%}
 
-  {%- set old_relation = adapter.get_relation(database=database, schema=schema, identifier=identifier) -%}
-  {%- set exists_as_view = (old_relation is not none and old_relation.is_view) -%}
   {%- set copy_grants = config.get('copy_grants', default=false) -%}
 
   {%- set target_relation = api.Relation.create(
       identifier=identifier, schema=schema, database=database,
       type='view') -%}
-  {% set grant_config = config.get('grants') %}
 
   {%- if copy_grants -%}
-    {#- Normalize SQL and append COPY GRANTS if not already present (case-insensitive) -#}
-    {%- set _sql_norm = sql | trim -%}
-    {%- set _sql_norm = _sql_norm[:-1] if _sql_norm[-1:] == ';' else _sql_norm -%}
-    {%- set _sql_norm = _sql_norm | trim -%}
-    {%- set _ends = (_sql_norm | lower)[-11:] -%}
-    {%- if _ends != 'copy grants' -%}
-      {%- set sql = sql ~ '\nCOPY GRANTS' -%}
-    {%- endif -%}
+    {%- set sql = dbt_semantic_view.append_copy_grants_if_missing(sql) -%}
   {%- endif -%}
 
   {{ run_hooks(pre_hooks) }}

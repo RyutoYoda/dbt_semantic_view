@@ -40,6 +40,9 @@ seeds:
 
 models:
   +bind: false
+  +persist_docs:
+    relation: true
+    column: true
 
 on-run-start:
   - "{{ create_base_table2() }}"

@@ -21,4 +21,9 @@ models:
   - name: semantic_view_with_config_copy_grants
     config:
       copy_grants: true
-  - name: semantic_view_with_copy_grants
+  - name: semantic_view_with_ddl_copy_grants_and_config_copy_grants
+    config:
+      copy_grants: true
+  - name: semantic_view_with_calc_name_copy_grants
+    config:
+      copy_grants: true
