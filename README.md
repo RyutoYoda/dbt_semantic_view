@@ -12,8 +12,8 @@ Follow these steps on macOS/Linux with Python 3 installed. No prior dbt installa
 
 1) Clone and enter the repo
 ```
-git clone https://github.com/Snowflake-Labs/dbt-snowflake-semantic-view.git
-cd dbt-snowflake-semantic-view
+git clone https://github.com/Snowflake-Labs/dbt_semantic_view.git
+cd dbt_semantic_view/
 ```
 
 2) Create an isolated Python environment and install dependencies
@@ -77,6 +77,21 @@ from semantic_view(
   [ WHERE <predicate> ]
 )
 ```
+
+### Note on documentation persistence (persist_docs)
+At this time, dbt-driven documentation persistence for Semantic Views (persist_docs) is not supported by this package. Enabling `persist_docs` and adding model or column descriptions will not affect Semantic Views.
+
+Inline COMMENT syntax within the Semantic View DDL is supported and will be applied by Snowflake. For example:
+```
+CREATE OR REPLACE SEMANTIC VIEW <name>
+  TABLES ( ... COMMENT = '...' )
+  [ FACTS ( ... COMMENT = '...' ) ]
+  [ DIMENSIONS ( ... COMMENT = '...' ) ]
+  [ METRICS ( ... COMMENT = '...' ) ]
+  [ COMMENT = '...' ]
+```
+
+We plan to revisit persist_docs support as upstream capabilities evolve.
 
 ### Development
 - Python 3.9+ recommended
