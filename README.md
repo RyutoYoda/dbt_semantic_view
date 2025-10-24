@@ -118,6 +118,24 @@ CREATE OR REPLACE SEMANTIC VIEW <name>
   [ COMMENT = '...' ]
 ```
 
+#### Column-level comments from schema.yml
+This package provides utility macros to automatically add column-level comments from `schema.yml` descriptions to Semantic View elements:
+
+```sql
+{{ config(materialized='semantic_view') }}
+TABLES ( t1 AS {{ ref('my_model') }} )
+DIMENSIONS (
+  t1.customer_id AS customer_id {{ dbt_semantic_view.get_column_comment('my_model', 'customer_id') }},
+  t1.order_date AS order_date {{ dbt_semantic_view.get_column_comment('my_model', 'order_date') }}
+)
+FACTS (
+  t1.amount AS amount {{ dbt_semantic_view.get_column_comment('my_model', 'amount') }}
+)
+COMMENT = '{{ dbt_semantic_view.get_model_comment("my_model") }}'
+```
+
+These macros will automatically extract descriptions from your `schema.yml` and apply them as `COMMENT` clauses.
+
 ### Development
 - Python 3.9+ recommended
 - Use a venv: `python3 -m venv .venv && source .venv/bin/activate`
