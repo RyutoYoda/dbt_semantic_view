@@ -45,7 +45,7 @@
   {%- if model and model.columns and column_name in model.columns -%}
     {%- set column = model.columns[column_name] -%}
     {%- if column.description -%}
-      {{- " COMMENT='" ~ column.description ~ "'" -}}
+      {{- " COMMENT='" ~ column.description.replace("'", "''") ~ "'" -}}
     {%- endif -%}
   {%- endif -%}
 {%- endmacro %}
@@ -77,6 +77,6 @@
   
   {#- Return the model description if it exists -#}
   {%- if model and model.description -%}
-    {{- model.description -}}
+    {{- model.description.replace("'", "''") -}}
   {%- endif -%}
 {%- endmacro %}
