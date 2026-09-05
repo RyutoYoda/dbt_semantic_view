@@ -67,7 +67,8 @@
     {%- if has_comment -%}
       {%- set out = s -%}
     {%- else -%}
-      {%- set out = s ~ "\nCOMMENT='" ~ comment ~ "'" -%}
+      {# escape single quotes so a description cannot terminate the string literal #}
+      {%- set out = s ~ "\nCOMMENT='" ~ (comment | replace("'", "''")) ~ "'" -%}
     {%- endif -%}
 
     {{- out -}}
