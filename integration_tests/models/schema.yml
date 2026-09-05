@@ -27,5 +27,11 @@ models:
   - name: semantic_view_with_calc_name_copy_grants
     config:
       copy_grants: true
+  - name: semantic_view_with_materializations
+    tests:
+      - dbt_semantic_view.materialization_exists:
+          materialization_name: test_mat_by_value
+      - dbt_semantic_view.materialization_is_active:
+          materialization_name: test_mat_by_value
   - name: semantic_view_with_persist_docs
     description: "This semantic view tests persist_docs functionality"
