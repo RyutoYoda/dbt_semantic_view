@@ -231,7 +231,7 @@ models:
     description: "This description becomes the semantic view COMMENT"
 ```
 
-If the model SQL body already ends with its own `COMMENT=` clause, that one wins and nothing is appended.
+If the model SQL body already contains a `COMMENT=` clause, nothing is appended — the DDL in the model wins.
 
 Column-level `persist_docs` is not supported — semantic views expose DIMENSIONS, METRICS, and FACTS rather than columns. Use inline `COMMENT` syntax in the DDL for those:
 

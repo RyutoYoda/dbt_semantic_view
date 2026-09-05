@@ -123,22 +123,23 @@
     {%- endif -%}
   {%- endif -%}
 
-  {# Inject max_staleness from config into the SQL body #}
-  {%- if max_staleness is not none -%}
-    {%- if 'max_staleness' in (sql | lower) -%}
-      {{ exceptions.raise_compiler_error(
-          "max_staleness is defined in both config() and the model SQL body. Remove one."
-      ) }}
-    {%- endif -%}
-    {%- set sql = sql ~ "\nMAX_STALENESS = '" ~ max_staleness ~ "'" -%}
+  {%- if max_staleness is not none and 'max_staleness' in (sql | lower) -%}
+    {{ exceptions.raise_compiler_error(
+        "max_staleness is defined in both config() and the model SQL body. Remove one."
+    ) }}
   {%- endif -%}
 
   {%- set target_relation = api.Relation.create(
       identifier=identifier, schema=schema, database=database,
       type='view') -%}
 
+  {# Trailing clauses must follow Snowflake's DDL order: COMMENT, MAX_STALENESS, COPY GRANTS #}
   {%- if relation_comment -%}
     {%- set sql = dbt_semantic_view.append_comment_if_missing(sql, relation_comment) -%}
+  {%- endif -%}
+
+  {%- if max_staleness is not none -%}
+    {%- set sql = sql ~ "\nMAX_STALENESS = '" ~ max_staleness ~ "'" -%}
   {%- endif -%}
 
   {%- if copy_grants and not create_or_alter -%}
